@@ -28,7 +28,6 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -186,9 +185,11 @@ async def _simulate_processing(job_id: str, video_path: str):
     for i in range(20):
         mins = (i * 15) // 60
         secs = (i * 15) % 60
+        persons_count = random.randint(1, 6)
         time_series.append({
             "time": f"{mins:02d}:{secs:02d}",
-            "persons": random.randint(1, 6),
+            "persons": persons_count,
+            "helmets": random.randint(0, persons_count),
             "frame": i * 45,
         })
 
@@ -202,6 +203,8 @@ async def _simulate_processing(job_id: str, video_path: str):
         "total_unique_persons": 6,
         "avg_presence_time_seconds": sum(p["total_time_seconds"] for p in persons) / len(persons),
         "zone_occupancy_time_seconds": sum(z["total_duration_seconds"] for z in zones),
+        "helmet_detection_enabled": False,
+        "helmet_compliance_pct": None,
         "persons": persons,
         "zones": zones,
         "time_series": time_series,
@@ -296,18 +299,17 @@ async def get_status(job_id: str):
 @app.get("/result/{job_id}", tags=["Results"])
 async def get_result(job_id: str):
     """Return analytics JSON for completed job."""
-    if job_id not in JOBS:
-        raise HTTPException(status_code=404, detail="Job not found")
-    j = JOBS[job_id]
-    if j["status"] != "completed":
-        raise HTTPException(status_code=202, detail="Processing not yet complete")
-    if j.get("result"):
-        return j["result"]
+    if job_id in JOBS:
+        j = JOBS[job_id]
+        if j["status"] != "completed":
+            raise HTTPException(status_code=202, detail="Processing not yet complete")
+        if j.get("result"):
+            return j["result"]
     result_file = job_dir(job_id) / "result.json"
     if result_file.exists():
         with open(result_file) as f:
             return json.load(f)
-    raise HTTPException(status_code=404, detail="Result not found")
+    raise HTTPException(status_code=404, detail="Job not found")
 
 def _reencode_h264(src: Path, dest: Path) -> bool:
     """Try to re-encode src to H.264 at dest using ffmpeg. Returns True on success."""

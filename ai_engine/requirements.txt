@@ -1,9 +1,9 @@
 # Core
-fastapi==0.111.0
-uvicorn[standard]==0.29.0
-python-multipart==0.0.9
-pydantic==2.7.1
-aiofiles==23.2.1
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9
+pydantic>=2.9.0
+aiofiles>=23.2.1
 
 # AI Engine
 ultralytics>=8.2.0

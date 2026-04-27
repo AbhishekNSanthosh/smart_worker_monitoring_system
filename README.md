@@ -93,16 +93,26 @@ python -m venv .venv
 
 Activate it:
 
-- **Windows:**
-  ```bash
-  .venv\Scripts\activate
+- **Windows (PowerShell):**
+  ```powershell
+  .\.venv\Scripts\Activate.ps1
   ```
+  > If you get a script execution error, run this once first:
+  > ```powershell
+  > Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+  > ```
 - **macOS / Linux:**
   ```bash
   source .venv/bin/activate
   ```
 
-### 3. Install backend dependencies
+### 3. Upgrade pip
+
+```bash
+python -m pip install --upgrade pip
+```
+
+### 4. Install backend dependencies
 
 ```bash
 pip install -r backend/requirements.txt
@@ -110,7 +120,7 @@ pip install -r backend/requirements.txt
 
 This installs FastAPI, Uvicorn, and the supporting libraries. The backend starts in **simulation mode** with just these dependencies.
 
-### 4. (Optional) Install AI engine dependencies
+### 5. Install AI engine dependencies
 
 To enable real YOLOv8 detection and ByteTrack tracking, install the AI dependencies:
 
@@ -118,7 +128,9 @@ To enable real YOLOv8 detection and ByteTrack tracking, install the AI dependenc
 pip install -r ai_engine/requirements.txt
 ```
 
-**GPU acceleration (recommended for real-time streams):** Install PyTorch with CUDA before the above step:
+> Without this step the backend falls back to simulation mode and logs a warning on startup.
+
+**GPU acceleration (recommended for real-time streams):** Install PyTorch with CUDA **before** the above step:
 
 ```bash
 # CUDA 11.8
@@ -128,7 +140,7 @@ pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 ```
 
-### 5. Install frontend dependencies
+### 6. Install frontend dependencies
 
 ```bash
 cd frontend
@@ -136,7 +148,7 @@ npm install
 cd ..
 ```
 
-### 6. Configure environment variables
+### 7. Configure environment variables
 
 The frontend needs to know where the backend is running. Create the file `frontend/.env.local`:
 
@@ -159,6 +171,8 @@ You need two terminals running simultaneously — one for the backend and one fo
 cd backend
 uvicorn main:app --reload --port 8000
 ```
+
+> If the startup log shows `AI engine not installed — running simulation mode`, it means the AI dependencies from step 5 are not installed. Install them and restart.
 
 The API will be available at `http://localhost:8000`.  
 Interactive API docs: `http://localhost:8000/docs`
