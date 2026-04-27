@@ -1,0 +1,36 @@
+# Generated outputs and uploaded files
+outputs/
+uploads/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# ML model weights (large binaries)
+*.pt
+*.pth
+*.onnx
+*.weights
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Node
+node_modules/
+.next/
+.turbo/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Personal notes — not for version control
+NOTES.md

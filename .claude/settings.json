@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(taskkill /F /IM python.exe)",
+      "Bash(python -c ' *)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill /F /PID 9944 /PID 2284)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:8000/video/2671a12b-840e-485f-b844-873130760794\")",
+      "Bash(curl -si \"http://localhost:8000/video/2671a12b-840e-485f-b844-873130760794\")"
+    ]
+  }
+}
